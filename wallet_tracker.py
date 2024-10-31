@@ -2,6 +2,7 @@
 
 import sys
 import requests
+import time
 
 
 def get_stacks_balance(addr):
@@ -19,19 +20,22 @@ def get_stacks_balance(addr):
     return stx_balance
 
 def monitor_wallets(wallet_list):
-    for i, wallet in enumerate(wallet_list):
-        balance = get_stacks_balance(wallet)
-        if balance is not None and balance > 0:
-            print(f"Address: {i + 1}: {wallet}")
-            print(f"Balance: {balance} STX")
-            print("---")
-        else:
-            print(f"Address {i + 1}: {wallet}")
-            print("Failed to get balance")
-            print("---")
+    initial_balances = {addr: get_stacks_balance(addr) for addr in wallet_list}
+
+    print("Initial Wallet Balances:")
+    for addr, balance in initial_balances.items():
+        print(f"Address: {addr}: {balance} STX")
+
+    while True:
+        for wallet in wallet_list:
+            current_balance = get_stacks_balance(wallet)
+            if current_balance is not None and current_balance != initial_balances[wallet]:
+                print(f"Address: {wallet} - Updated Balance: {current_balance} STX")
+                initial_balances[wallet] = current_balance
+        time.sleep(10)
 
 def main():
-    if len(sys.argv) < 2:
+    if len(sys.argv) < 3:
         print("Please provide at least one wallet address as a command-line argument.")
         sys.exit(1)
 
