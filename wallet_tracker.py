@@ -5,7 +5,11 @@ import requests
 
 
 def get_stacks_balance(addr):
-    url = f"https://api.testnet.hiro.so/extended/v1/address/{addr}/balances"
+    chain = sys.argv[1]
+    if chain not in ["mainnet", "testnet"]:
+        raise ValueError("Invalid chain name. Please use 'mainnet' or 'testnet'.")
+
+    url = f"https://api.{chain}.hiro.so/extended/v1/address/{addr}/balances"
     r = requests.get(url)
     if r.status_code != 200:
         return None
@@ -31,7 +35,7 @@ def main():
         print("Please provide at least one wallet address as a command-line argument.")
         sys.exit(1)
 
-    wallet_list = sys.argv[1:]
+    wallet_list = sys.argv[2:]
 
     try:
         monitor_wallets(wallet_list)
