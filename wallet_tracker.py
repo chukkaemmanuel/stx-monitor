@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import sys
 import requests
 
 
@@ -12,6 +13,18 @@ def get_stacks_balance(addr):
     data = r.json()
     stx_balance = int(data['stx']['balance']) / 10**6
     return stx_balance
+
+def monitor_wallets(wallet_list):
+    for wallet in wallet_list:
+        balance = get_stacks_balance(wallet)
+        if balance is not None and balance > 0:
+            print(f"Address: {wallet}")
+            print(f"Balance: {balance} STX")
+            print("---")
+        else:
+            print(f"Address: {wallet}")
+            print("Failed to get balance")
+            print("---")
 
 def main():
     mnemonic = "twice kind fence tip hidden tilt action fragile skin nothing glory cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw"
