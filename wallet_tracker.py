@@ -15,40 +15,28 @@ def get_stacks_balance(addr):
     return stx_balance
 
 def monitor_wallets(wallet_list):
-    for wallet in wallet_list:
+    for i, wallet in enumerate(wallet_list):
         balance = get_stacks_balance(wallet)
         if balance is not None and balance > 0:
-            print(f"Address: {wallet}")
+            print(f"Address: {i + 1}: {wallet}")
             print(f"Balance: {balance} STX")
             print("---")
         else:
-            print(f"Address: {wallet}")
+            print(f"Address {i + 1}: {wallet}")
             print("Failed to get balance")
             print("---")
 
 def main():
-    mnemonic = "twice kind fence tip hidden tilt action fragile skin nothing glory cousin green tomorrow spring wrist shed math olympic multiply hip blue scout claw"
-    num_addrs = 100
+    if len(sys.argv) < 2:
+        print("Please provide at least one wallet address as a command-line argument.")
+        sys.exit(1)
+
+    wallet_list = sys.argv[1:]
 
     try:
-        addrs = gen_stacks_addr(mnemonic, num_addrs)
-
-
-        for i , addr in enumerate(addrs):
-            balance = get_stacks_balance(addr)
-            if balance is not None and balance > 0:
-                print(f"Address {i + 1}: {addr}")
-                print(f"Balance: {balance} STX")
-                print("---")
-            else:
-                print(f"Address {i + 1}: {addr}")
-                print("Failed to get balance")
-                print("---")
+        monitor_wallets(wallet_list)
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-        print("Please make sure you have the latest version of bip_utils installed.")
-        print("You can update it using: pip install --upgrade bip_utils")
-
 
 if __name__ == "__main__":
     main()
